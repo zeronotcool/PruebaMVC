@@ -19,6 +19,8 @@ package org.sloom.pruebamvc.controlador;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import org.sloom.pruebamvc.modelo.Modelo;
 import org.sloom.pruebamvc.vista.DialogoNombre;
 import org.sloom.pruebamvc.vista.VistaPrincipal;
@@ -27,7 +29,7 @@ import org.sloom.pruebamvc.vista.VistaPrincipal;
  *
  * @author Antonio Martínez Palao <martinezpalao@hotmail.com>
  */
-public class ControladorMonolito implements ActionListener {
+public class ControladorMonolito implements ActionListener, KeyListener {
 
     private Modelo modelo;
     private VistaPrincipal vistaPrincipal;
@@ -36,7 +38,8 @@ public class ControladorMonolito implements ActionListener {
     public ControladorMonolito(Modelo modelo, VistaPrincipal vistaPrincipal) {
         this.modelo = modelo;
         this.vistaPrincipal = vistaPrincipal;
-        vistaPrincipal.setupListener(this); // controla los listener de la vista        
+        vistaPrincipal.setupListener(this); // controla los listener de la vista
+        vistaPrincipal.setupKeyListener(this);
     }
 
     @Override
@@ -45,7 +48,7 @@ public class ControladorMonolito implements ActionListener {
         // Obtiene el atributo "name" del componente que se ha tocado
         Component o = (Component) action.getSource();
         String name = o.getName();
-        
+
         // Controla la acción de los botones de la ventana principal
         if (name.equals("btnSalir")) {
             vistaPrincipal.dispose();
@@ -53,15 +56,51 @@ public class ControladorMonolito implements ActionListener {
             // Muestra el diálogo
             dialogoNombre = new DialogoNombre(vistaPrincipal, true);
             dialogoNombre.setupListener(this);
+            dialogoNombre.setupKeyListener(this);
             dialogoNombre.setLocationRelativeTo(vistaPrincipal);
             dialogoNombre.setVisible(true);
-        } else if (name.equals("btnCancel")){
+        } else if (name.equals("btnCancel")) {
             dialogoNombre.dispose();
-        } else if (name.equals("btnOK")){
+        } else if (name.equals("btnOK") || name.equals("txtNombre")) {
             modelo.setNombre(dialogoNombre.getNombre());
             dialogoNombre.dispose();
             vistaPrincipal.setLabel(modelo.getNombre());
         }
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent keyEvent) {
+        // Obtiene el atributo "name" del componente que se ha tocado
+        Component o = (Component) keyEvent.getSource();
+        String name = o.getName();
+
+        if (name.equals("btnSalir")) {
+            vistaPrincipal.dispose();
+        } else if (name.equals("btnAsignar")) {
+            // Muestra el diálogo
+            dialogoNombre = new DialogoNombre(vistaPrincipal, true);
+            dialogoNombre.setupListener(this);
+            dialogoNombre.setupKeyListener(this);
+            dialogoNombre.setLocationRelativeTo(vistaPrincipal);
+            dialogoNombre.setVisible(true);
+        } else if (name.equals("btnCancel")) {
+            dialogoNombre.dispose();
+        } else if (name.equals("btnOK")) {
+            modelo.setNombre(dialogoNombre.getNombre());
+            dialogoNombre.dispose();
+            vistaPrincipal.setLabel(modelo.getNombre());
+        }
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
 
     }
 
